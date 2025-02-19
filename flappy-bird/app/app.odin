@@ -1,10 +1,11 @@
 package app
 
+import c "../config"
 import rl "vendor:raylib"
 
-Init :: proc(screen_width, screen_height: i32) {
-	rl.InitWindow(screen_width, screen_height, "Flappy bird")
-	center_window(screen_width, screen_height)
+Init :: proc() {
+	rl.InitWindow(c.SCREEN_WIDTH, c.SCREEN_HEIGHT, "Flappy bird")
+	center_window(c.SCREEN_WIDTH, c.SCREEN_HEIGHT)
 }
 
 Run :: proc() {
