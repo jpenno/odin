@@ -1,6 +1,7 @@
 package game
 
 import conf "../config"
+import "core:fmt"
 import "core:strings"
 import rl "vendor:raylib"
 
@@ -13,8 +14,11 @@ Game_State :: enum {
 }
 
 Game :: struct {
-	player: Player,
-	state:  Game_State,
+	player:           Player,
+	state:            Game_State,
+	pipes:            [10]Pipe,
+	pipe_spawn_timer: f32,
+	pipe_spawn_time:  f32,
 }
 
 @(private = "file")
@@ -26,9 +30,11 @@ game_err :: enum {
 
 init :: proc() -> game_err {
 	game = Game {
-		player = player_init(),
-		state  = .PAUSED,
+		player          = player_init(),
+		state           = .PAUSED,
+		pipe_spawn_time = 2.0,
 	}
+
 	return nil
 }
 
@@ -43,13 +49,7 @@ update :: proc() -> Game_State {
 			game.state = .QUIT
 		}
 	case .PLAYING:
-		if rl.IsKeyPressed(.ESCAPE) {
-			game.state = .PAUSED
-		}
-		if game.player.dead {
-			game.state = .OVER
-		}
-		player_update(&game.player, dt)
+		playing_update(dt)
 	case .OVER:
 		if rl.IsKeyPressed(.R) {
 			game.state = .RESET
@@ -72,12 +72,58 @@ draw :: proc() {
 		drawCenteredList({"Pused", "Press space to play", "Press escape to quit"}, rl.GREEN, 32)
 	case .PLAYING:
 		player_draw(game.player)
+
+		for p in game.pipes {
+			pipe_draw(p)
+		}
 	case .OVER:
 		drawCenteredList({"Game over", "Press r to play", "Press escape to quit"}, rl.RED, 32)
 	case .QUIT:
 	}
 }
 
+@(private = "file")
+playing_update :: proc(dt: f32) {
+	if rl.IsKeyPressed(.ESCAPE) {
+		game.state = .PAUSED
+	}
+	if game.player.dead {
+		game.state = .OVER
+	}
+
+	player_update(&game.player, dt)
+
+	for &p in game.pipes {
+		pipe_update(&p, dt)
+	}
+
+	for &p in game.pipes {
+		if rl.CheckCollisionRecs(game.player.rect, p.rect) {
+			game.state = .OVER
+		}
+	}
+
+	game.pipe_spawn_timer -= dt
+	if game.pipe_spawn_timer <= 0 {
+		spawn_pipes()
+		game.pipe_spawn_timer = game.pipe_spawn_time
+	}
+}
+
+spawn_pipes :: proc() {
+	pipes := pipe_spawn_pair()
+
+	for new_pipe in pipes {
+		for &p in game.pipes {
+			if p.active == false {
+				p = new_pipe
+				break
+			}
+		}
+	}
+}
+
+@(private = "file")
 drawCenteredList :: proc(list: []cstring, color: rl.Color, text_size: i32) {
 	item_len := i32(len(list))
 

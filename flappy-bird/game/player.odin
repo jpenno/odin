@@ -18,8 +18,8 @@ player_init :: proc() -> Player {
 		rect = rl.Rectangle{x = 100, y = 100, width = 100, height = 100},
 		color = rl.BLUE,
 		gravity = 500,
-		gravity_acell = 3_000,
-		jump_force = -900,
+		gravity_acell = 3_500,
+		jump_force = -800,
 	}
 }
 
