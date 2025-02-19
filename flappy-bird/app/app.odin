@@ -1,27 +1,53 @@
 package app
 
 import c "../config"
+import "../game"
 import rl "vendor:raylib"
 
-Init :: proc() {
-	rl.InitWindow(c.SCREEN_WIDTH, c.SCREEN_HEIGHT, "Flappy bird")
-	center_window(c.SCREEN_WIDTH, c.SCREEN_HEIGHT)
+State :: enum {
+	RUNNING,
+	PAUSED,
+	QUIT,
 }
 
-Run :: proc() {
+App :: struct {
+	state: State,
+}
+
+init :: proc() {
+	rl.InitWindow(c.SCREEN_WIDTH, c.SCREEN_HEIGHT, "Flappy bird")
+	center_window(c.SCREEN_WIDTH, c.SCREEN_HEIGHT)
+
+	game.init()
+}
+
+run :: proc() {
 	for !rl.WindowShouldClose() {
-		rl.BeginDrawing()
-
-		rl.ClearBackground(rl.GRAY)
-
-		rl.EndDrawing()
+		update()
+		draw()
 	}
 }
 
-Quit :: proc() {
+quit :: proc() {
 	rl.CloseWindow()
 }
 
+@(private)
+update :: proc() {
+	game.update()
+}
+
+@(private)
+draw :: proc() {
+	rl.BeginDrawing()
+
+	rl.ClearBackground(rl.GRAY)
+
+	game.draw()
+	rl.EndDrawing()
+}
+
+@(private)
 center_window :: proc(screen_width, screen_height: i32) {
 	pos := rl.GetMonitorPosition(rl.GetCurrentMonitor())
 	rl.SetWindowPosition(
