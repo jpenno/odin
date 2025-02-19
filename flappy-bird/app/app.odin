@@ -6,7 +6,6 @@ import rl "vendor:raylib"
 
 State :: enum {
 	RUNNING,
-	PAUSED,
 	QUIT,
 }
 
@@ -14,15 +13,21 @@ App :: struct {
 	state: State,
 }
 
+app := App{}
+
 init :: proc() {
 	rl.InitWindow(c.SCREEN_WIDTH, c.SCREEN_HEIGHT, "Flappy bird")
 	center_window(c.SCREEN_WIDTH, c.SCREEN_HEIGHT)
+
+	app = App {
+		state = .RUNNING,
+	}
 
 	game.init()
 }
 
 run :: proc() {
-	for !rl.WindowShouldClose() {
+	for app.state == .RUNNING {
 		update()
 		draw()
 	}
@@ -34,7 +39,9 @@ quit :: proc() {
 
 @(private)
 update :: proc() {
-	game.update()
+	if game.update() == game.Game_State.QUIT {
+		app.state = .QUIT
+	}
 }
 
 @(private)

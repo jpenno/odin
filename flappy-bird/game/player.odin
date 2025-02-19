@@ -10,6 +10,7 @@ Player :: struct {
 	gravity:       f32,
 	gravity_acell: f32,
 	jump_force:    f32,
+	dead:          bool,
 }
 
 player_init :: proc() -> Player {
@@ -22,7 +23,7 @@ player_init :: proc() -> Player {
 	}
 }
 
-player_update :: proc(p: ^Player, dt: f32) {
+player_update :: proc(p: ^Player, dt: f32) -> bool {
 	if p.velocity.y < p.gravity {
 		p.velocity.y += p.gravity_acell * dt
 	} else {
@@ -34,6 +35,15 @@ player_update :: proc(p: ^Player, dt: f32) {
 	}
 
 	p.rect.y += p.velocity.y * dt
+
+	if p.rect.y < 0 {
+		p.dead = true
+	}
+	if p.rect.y > f32(rl.GetScreenHeight()) {
+		p.dead = true
+	}
+
+	return p.dead
 }
 
 player_draw :: proc(p: Player) {
