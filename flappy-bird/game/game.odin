@@ -7,7 +7,7 @@ import rl "vendor:raylib"
 Game_State :: enum {
 	PLAYING,
 	PAUSED,
-	RESTE,
+	RESET,
 	OVER,
 	QUIT,
 }
@@ -52,12 +52,12 @@ update :: proc() -> Game_State {
 		player_update(&game.player, dt)
 	case .OVER:
 		if rl.IsKeyPressed(.R) {
-			game.state = .RESTE
+			game.state = .RESET
 		}
 		if rl.IsKeyPressed(.ESCAPE) {
 			game.state = .QUIT
 		}
-	case .RESTE:
+	case .RESET:
 		init()
 		game.state = .PLAYING
 	case .QUIT:
