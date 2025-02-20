@@ -3,14 +3,20 @@ package game
 import "core:math/rand"
 import rl "vendor:raylib"
 
+Pipe_state :: enum {
+	ACTIVE,
+	SCORED,
+	UNACTIVE,
+}
+
 Pipe :: struct {
 	rect:     rl.Rectangle,
 	velocity: rl.Vector2,
-	active:   bool,
+	state:    Pipe_state,
 }
 
 pipe_init :: proc(rect: rl.Rectangle) -> Pipe {
-	return Pipe{rect = rect, velocity = rl.Vector2{-200, 0}, active = true}
+	return Pipe{rect = rect, velocity = rl.Vector2{-200, 0}, state = .ACTIVE}
 }
 
 pipe_spawn_pair :: proc() -> [2]Pipe {
@@ -38,11 +44,22 @@ pipe_spawn_pair :: proc() -> [2]Pipe {
 	return pipes
 }
 
-pipe_update :: proc(p: ^Pipe, dt: f32) {
+pipe_update :: proc(p: ^Pipe, player: ^Player, dt: f32) {
+	if p.state == .UNACTIVE {
+		return
+	}
+
+	if p.state == .ACTIVE {
+		if p.rect.x < player.rect.x {
+			p.state = .SCORED
+			player.score += 1
+		}
+	}
+
 	p.rect.x += p.velocity.x * dt
 
 	if p.rect.x + p.rect.width < 0 {
-		p.active = false
+		p.state = .UNACTIVE
 	}
 }
 

@@ -35,6 +35,10 @@ init :: proc() -> game_err {
 		pipe_spawn_time = 2.0,
 	}
 
+	for &p in game.pipes {
+		p.state = .UNACTIVE
+	}
+
 	return nil
 }
 
@@ -96,7 +100,7 @@ playing_update :: proc(dt: f32) {
 	player_update(&game.player, dt)
 
 	for &p in game.pipes {
-		pipe_update(&p, dt)
+		pipe_update(&p, &game.player, dt)
 	}
 
 	for &p in game.pipes {
@@ -117,7 +121,7 @@ spawn_pipes :: proc() {
 
 	for new_pipe in pipes {
 		for &p in game.pipes {
-			if p.active == false {
+			if p.state == .UNACTIVE {
 				p = new_pipe
 				break
 			}
@@ -141,8 +145,7 @@ draw_centered_list :: proc(
 
 	i: i32 = 0
 	for item in list {
-		cstr := strings.clone_to_cstring(item)
-		defer delete(cstr)
+		cstr := strings.clone_to_cstring(item, context.temp_allocator)
 
 		text_len := rl.MeasureText(cstr, text_size) / 2
 
