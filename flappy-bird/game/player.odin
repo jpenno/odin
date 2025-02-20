@@ -11,6 +11,7 @@ Player :: struct {
 	gravity_acell: f32,
 	jump_force:    f32,
 	dead:          bool,
+	score:         u32,
 }
 
 player_init :: proc() -> Player {

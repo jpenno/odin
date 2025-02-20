@@ -69,15 +69,17 @@ update :: proc() -> Game_State {
 draw :: proc() {
 	#partial switch game.state {
 	case .PAUSED:
-		drawCenteredList({"Pused", "Press space to play", "Press escape to quit"}, rl.GREEN, 32)
+		draw_centered_list({"Pused", "Press space to play", "Press escape to quit"}, rl.GREEN, 32)
 	case .PLAYING:
 		player_draw(game.player)
-
 		for p in game.pipes {
 			pipe_draw(p)
 		}
+		score_text := fmt.aprintfln("Score: %d", game.player.score)
+		score_len := len(score_text)
+		draw_centered_list({score_text}, rl.SKYBLUE, 32, .TOP)
 	case .OVER:
-		drawCenteredList({"Game over", "Press r to play", "Press escape to quit"}, rl.RED, 32)
+		draw_centered_list({"Game over", "Press r to play", "Press escape to quit"}, rl.RED, 32)
 	case .QUIT:
 	}
 }
@@ -123,19 +125,38 @@ spawn_pipes :: proc() {
 	}
 }
 
+Align_text :: enum {
+	CENTER,
+	TOP,
+}
+
 @(private = "file")
-drawCenteredList :: proc(list: []cstring, color: rl.Color, text_size: i32) {
+draw_centered_list :: proc(
+	list: []string,
+	color: rl.Color,
+	text_size: i32,
+	align: Align_text = .CENTER,
+) {
 	item_len := i32(len(list))
 
 	i: i32 = 0
 	for item in list {
-		text_len := rl.MeasureText(item, text_size) / 2
+		cstr := strings.clone_to_cstring(item)
+		defer delete(cstr)
 
+		text_len := rl.MeasureText(cstr, text_size) / 2
+
+		y: i32
 		x := conf.SCREEN_WIDTH / 2 - text_len
-		y := (conf.SCREEN_HEIGHT / 2) + (text_size * i)
+		switch align {
+		case .CENTER:
+			y = (conf.SCREEN_HEIGHT / 2) + (text_size * i)
+		case .TOP:
+			y = text_size
+		}
 		y -= text_size * item_len / 2
 
-		rl.DrawText(item, x, y, text_size, color)
+		rl.DrawText(cstr, x, y, text_size, color)
 		i += 1
 	}
 }
