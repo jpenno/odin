@@ -79,11 +79,15 @@ draw :: proc() {
 		for p in game.pipes {
 			pipe_draw(p)
 		}
-		score_text := fmt.aprintfln("Score: %d", game.player.score)
-		score_len := len(score_text)
-		draw_centered_list({score_text}, rl.SKYBLUE, 32, .TOP)
+		player_draw_score(game.player)
 	case .OVER:
-		draw_centered_list({"Game over", "Press r to play", "Press escape to quit"}, rl.RED, 32)
+		player_draw_highscores(game.player)
+		player_score_str := fmt.aprintf("Scero: %d", game.player.score)
+		draw_centered_list(
+			{player_score_str, "Game over", "Press r to play", "Press escape to quit"},
+			rl.RED,
+			32,
+		)
 	case .QUIT:
 	}
 }
@@ -92,21 +96,17 @@ draw :: proc() {
 playing_update :: proc(dt: f32) {
 	if rl.IsKeyPressed(.ESCAPE) {
 		game.state = .PAUSED
+		return
 	}
 	if game.player.dead {
 		game.state = .OVER
+		return
 	}
 
-	player_update(&game.player, dt)
+	player_update(&game.player, game.pipes, dt)
 
 	for &p in game.pipes {
 		pipe_update(&p, &game.player, dt)
-	}
-
-	for &p in game.pipes {
-		if rl.CheckCollisionRecs(game.player.rect, p.rect) {
-			game.state = .OVER
-		}
 	}
 
 	game.pipe_spawn_timer -= dt
@@ -134,7 +134,6 @@ Align_text :: enum {
 	TOP,
 }
 
-@(private = "file")
 draw_centered_list :: proc(
 	list: []string,
 	color: rl.Color,
@@ -143,23 +142,22 @@ draw_centered_list :: proc(
 ) {
 	item_len := i32(len(list))
 
-	i: i32 = 0
-	for item in list {
+	y: i32
+	switch align {
+	case .CENTER:
+		y = (conf.SCREEN_HEIGHT / 2) + (text_size)
+	case .TOP:
+		y = 10
+	}
+
+	for item, i in list {
 		cstr := strings.clone_to_cstring(item, context.temp_allocator)
 
 		text_len := rl.MeasureText(cstr, text_size) / 2
 
-		y: i32
 		x := conf.SCREEN_WIDTH / 2 - text_len
-		switch align {
-		case .CENTER:
-			y = (conf.SCREEN_HEIGHT / 2) + (text_size * i)
-		case .TOP:
-			y = text_size
-		}
-		y -= text_size * item_len / 2
-
 		rl.DrawText(cstr, x, y, text_size, color)
-		i += 1
+
+		y += text_size
 	}
 }
