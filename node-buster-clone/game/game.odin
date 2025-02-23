@@ -21,6 +21,7 @@ Game :: struct {
 	box_timer:        Timer,
 	box_spawn_amount: int,
 	player:           Player,
+	start_button:     Button,
 }
 
 @(private = "file")
@@ -28,10 +29,11 @@ game: Game = Game{}
 
 init :: proc() {
 	game = Game {
-		state            = .PLAYING,
+		state            = .START,
 		box_timer        = timer_init(1.5),
 		box_spawn_amount = 1,
 		player           = player_init(),
+		start_button     = buttor_init(rl.Vector2{100, 100}),
 	}
 }
 
@@ -111,6 +113,7 @@ draw :: proc() {
 
 	switch game.state {
 	case .START:
+		game_draw_start()
 	case .RESET:
 	case .PLAYING:
 		game_draw_playing()
@@ -118,6 +121,10 @@ draw :: proc() {
 	case .OVER:
 	case .QUIT:
 	}
+}
+
+game_draw_start :: proc() {
+	button_draw(game.start_button)
 }
 
 game_draw_playing :: proc() {
