@@ -33,7 +33,10 @@ init :: proc() {
 		box_timer        = timer_init(1.5),
 		box_spawn_amount = 1,
 		player           = player_init(),
-		start_button     = buttor_init(rl.Vector2{100, 100}),
+		start_button     = buttor_init(
+			rl.Vector2{f32(rl.GetScreenWidth() / 2), f32(rl.GetScreenHeight()) / 2},
+			"Strat",
+		),
 	}
 }
 

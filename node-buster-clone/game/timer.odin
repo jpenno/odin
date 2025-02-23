@@ -4,6 +4,7 @@ Timer_state :: enum {
 	DONE,
 	IN_PORGRESS,
 	RESET,
+	STOP,
 }
 
 Timer :: struct {
@@ -25,6 +26,9 @@ timer_set_state :: proc(t: ^Timer, state: Timer_state) {
 		t.state = .IN_PORGRESS
 	case .DONE:
 		t.state = .DONE
+	case .STOP:
+		t.timer = t.time
+		t.state = .STOP
 	}
 }
 
@@ -41,6 +45,7 @@ timer_tick :: proc(t: ^Timer, dt: f32) -> Timer_state {
 		}
 	case .DONE:
 		t.state = .IN_PORGRESS
+	case .STOP:
 	}
 
 	return t.state
