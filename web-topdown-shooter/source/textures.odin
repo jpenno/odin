@@ -3,6 +3,8 @@ package game
 import "core:c"
 import rl "vendor:raylib"
 
+textures: [Texture_Name]Texture
+
 Texture_Name :: enum {
 	None,
 	Player,
