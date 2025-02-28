@@ -6,23 +6,32 @@ import "core:math/linalg"
 import rl "vendor:raylib"
 
 Player :: struct {
-	Pos:   rl.Vector2,
-	Dir:   rl.Vector2,
-	Size:  rl.Vector2,
-	speed: f32,
+	Pos:     rl.Vector2,
+	Dir:     rl.Vector2,
+	Size:    rl.Vector2,
+	speed:   f32,
+	Bullets: [10]Bullet,
 }
 
 player_update :: proc(p: ^Player, dt: f32) {
 	move(p, dt)
 
-	if rl.IsMouseButtonDown(rl.MouseButton.LEFT) {
-		fmt.println("shoot")
+	if rl.IsMouseButtonPressed(rl.MouseButton.LEFT) {
+		shoot(p, rl.GetMousePosition())
+	}
+
+	for &b in p.Bullets {
+		bullet_update(&b, dt)
 	}
 
 	collision(p)
 }
 
 player_draw :: proc(p: Player) {
+	for b in p.Bullets {
+		bullet_draw(b)
+	}
+
 	dist := p.Pos - rl.GetMousePosition()
 	radians := math.atan2(dist.x, dist.y)
 	rotation := -radians * 180 / math.PI
@@ -66,8 +75,13 @@ move :: proc(p: ^Player, dt: f32) {
 }
 
 @(private = "file")
-shoot :: proc(p: Player, target: rl.Vector2) {
-
+shoot :: proc(p: ^Player, target: rl.Vector2) {
+	for &b in p.Bullets {
+		if !b.active {
+			b = bullet_init(p.Pos, target)
+			break
+		}
+	}
 }
 
 @(private = "file")
