@@ -1,7 +1,6 @@
 package game
 
 import "core:c"
-import "core:math"
 import rl "vendor:raylib"
 
 
@@ -41,20 +40,6 @@ draw :: proc() {
 
 	enemy_draw(enemy)
 	player_draw(player)
-
-
-	// x: f64 = f64(player.Pos.x) - f64(rl.GetMouseX())
-	// y: f64 = f64(player.Pos.y) - f64(rl.GetMouseY())
-	// rotation := math.atan2(x, y) * -57.29578 // Multiplies the angle by -57.295 to convert to degrees
-
-	rl.DrawTexturePro(
-		textures[.Enemy].texture,
-		textures[.Enemy].source_rect,
-		{500, 500, textures[.Enemy].source_rect.width, textures[.Enemy].source_rect.height},
-		{textures[.Enemy].source_rect.width / 2, textures[.Enemy].source_rect.height / 2},
-		0,
-		rl.WHITE,
-	)
 
 	rl.EndDrawing()
 }

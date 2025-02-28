@@ -1,6 +1,5 @@
 package game
 
-import "core:fmt"
 import "core:math"
 import "core:math/linalg"
 import rl "vendor:raylib"
@@ -21,7 +20,9 @@ player_update :: proc(p: ^Player, dt: f32) {
 	}
 
 	for &b in p.Bullets {
-		bullet_update(&b, dt)
+		if b.active {
+			bullet_update(&b, dt)
+		}
 	}
 
 	collision(p)
@@ -29,7 +30,9 @@ player_update :: proc(p: ^Player, dt: f32) {
 
 player_draw :: proc(p: Player) {
 	for b in p.Bullets {
-		bullet_draw(b)
+		if b.active {
+			bullet_draw(b)
+		}
 	}
 
 	dist := p.Pos - rl.GetMousePosition()
@@ -67,8 +70,6 @@ move :: proc(p: ^Player, dt: f32) {
 	if rl.IsKeyDown(rl.KeyboardKey.D) || rl.IsKeyDown(rl.KeyboardKey.RIGHT) {
 		p.Dir.x = 1
 	}
-
-	dist := p.Pos - rl.GetMousePosition()
 
 	p.Dir = linalg.vector_normalize0(p.Dir)
 	p.Pos += p.Dir * p.speed * dt

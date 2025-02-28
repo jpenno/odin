@@ -23,16 +23,16 @@ bullet_init :: proc(pos, target: rl.Vector2) -> Bullet {
 bullet_update :: proc(b: ^Bullet, dt: f32) {
 	b.Pos += b.Dir * b.Speed * dt
 
-	if b.Pos.x - b.Size.x / 2 <= 0 {
+	if b.Pos.x + b.Size.x / 2 <= 0 {
 		b.active = false
 	}
-	if b.Pos.y - b.Size.y / 2 <= 0 {
+	if b.Pos.y + b.Size.y / 2 <= 0 {
 		b.active = false
 	}
-	if b.Pos.x + b.Size.x / 2 >= f32(rl.GetScreenWidth()) {
+	if b.Pos.x - b.Size.x / 2 >= f32(rl.GetScreenWidth()) {
 		b.active = false
 	}
-	if b.Pos.y + b.Size.y / 2 >= f32(rl.GetScreenHeight()) {
+	if b.Pos.y - b.Size.y / 2 >= f32(rl.GetScreenHeight()) {
 		b.active = false
 	}
 }
