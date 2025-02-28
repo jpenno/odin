@@ -7,6 +7,7 @@ import rl "vendor:raylib"
 
 run: bool
 player: Player
+enemy: Enemy
 
 init :: proc() {
 	run = true
@@ -19,6 +20,9 @@ init :: proc() {
 		Pos   = {300, 300},
 		Size  = {textures[.Player].source_rect.width, textures[.Player].source_rect.height},
 		speed = 500,
+	}
+	enemy = Enemy {
+		Pos = {500, 500},
 	}
 }
 
@@ -35,25 +39,22 @@ draw :: proc() {
 	rl.BeginDrawing()
 	rl.ClearBackground(rl.GRAY)
 
+	enemy_draw(enemy)
 	player_draw(player)
+
 
 	// x: f64 = f64(player.Pos.x) - f64(rl.GetMouseX())
 	// y: f64 = f64(player.Pos.y) - f64(rl.GetMouseY())
 	// rotation := math.atan2(x, y) * -57.29578 // Multiplies the angle by -57.295 to convert to degrees
-	//
-	// rl.DrawTexturePro(
-	// 	textures[.Player].texture,
-	// 	textures[.Player].source_rect,
-	// 	{
-	// 		player.Pos.x,
-	// 		player.Pos.y,
-	// 		textures[.Player].source_rect.width,
-	// 		textures[.Player].source_rect.height,
-	// 	},
-	// 	{textures[.Player].source_rect.width / 2, textures[.Player].source_rect.height / 2},
-	// 	f32(rotation),
-	// 	rl.WHITE,
-	// )
+
+	rl.DrawTexturePro(
+		textures[.Enemy].texture,
+		textures[.Enemy].source_rect,
+		{500, 500, textures[.Enemy].source_rect.width, textures[.Enemy].source_rect.height},
+		{textures[.Enemy].source_rect.width / 2, textures[.Enemy].source_rect.height / 2},
+		0,
+		rl.WHITE,
+	)
 
 	rl.EndDrawing()
 }

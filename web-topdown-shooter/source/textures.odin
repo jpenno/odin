@@ -8,6 +8,8 @@ textures: [Texture_Name]Texture
 Texture_Name :: enum {
 	None,
 	Player,
+	Enemy,
+	Bullet,
 }
 
 Texture :: struct {
@@ -17,6 +19,8 @@ Texture :: struct {
 
 init_textures :: proc() {
 	textures[.Player] = init_texture("assets/spaceship.png")
+	textures[.Enemy] = init_texture("assets/enemy.png")
+	textures[.Bullet] = init_texture("assets/bullet.png")
 }
 
 @(private = "file")

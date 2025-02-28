@@ -14,6 +14,11 @@ Player :: struct {
 
 player_update :: proc(p: ^Player, dt: f32) {
 	move(p, dt)
+
+	if rl.IsMouseButtonDown(rl.MouseButton.LEFT) {
+		fmt.println("shoot")
+	}
+
 	collision(p)
 }
 
@@ -54,8 +59,15 @@ move :: proc(p: ^Player, dt: f32) {
 		p.Dir.x = 1
 	}
 
+	dist := p.Pos - rl.GetMousePosition()
+
 	p.Dir = linalg.vector_normalize0(p.Dir)
 	p.Pos += p.Dir * p.speed * dt
+}
+
+@(private = "file")
+shoot :: proc(p: Player, target: rl.Vector2) {
+
 }
 
 @(private = "file")
