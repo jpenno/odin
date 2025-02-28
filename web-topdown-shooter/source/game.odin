@@ -32,9 +32,15 @@ update :: proc() {
 	// bullet enemy collision
 	for &b in player.Bullets {
 		if !enemy.dead {
-			if rl.CheckCollisionCircles(b.Pos, 16, enemy.Pos, 64) {
+			if rl.CheckCollisionCircles(
+				b.Pos,
+				textures[.Bullet].source_rect.width / 2,
+				enemy.Pos,
+				textures[.Enemy].source_rect.width / 2,
+			) {
 				b.active = false
 				enemy.dead = true
+				break
 			}
 		}
 	}
