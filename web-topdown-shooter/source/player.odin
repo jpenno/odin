@@ -18,9 +18,9 @@ player_update :: proc(p: ^Player, dt: f32) {
 }
 
 player_draw :: proc(p: Player) {
-	x: f64 = f64(p.Pos.x) - f64(rl.GetMouseX())
-	y: f64 = f64(p.Pos.y) - f64(rl.GetMouseY())
-	rotation := math.atan2(x, y) * -57.29578 // Multiplies the angle by -57.295 to convert to degrees
+	dist := p.Pos - rl.GetMousePosition()
+	radians := math.atan2(dist.x, dist.y)
+	rotation := -radians * 180 / math.PI
 
 	rl.DrawTexturePro(
 		textures[.Player].texture,
