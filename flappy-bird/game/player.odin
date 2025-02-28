@@ -67,6 +67,8 @@ player_draw :: proc(p: Player) {
 
 player_draw_highscores :: proc(p: Player) {
 	highscors_str := make([]string, 10)
+	defer delete(highscors_str)
+
 	for s, i in p.highscores {
 		highscors_str[i] = fmt.aprintf("%d: %d", i + 1, s)
 	}
@@ -91,14 +93,20 @@ player_save_score :: proc(p: ^Player) {
 	p.highscores = file_io.get_highscores(filepath)
 
 	slice.reverse_sort(p.highscores[:])
+	test := make([dynamic]int, 11)
+	copy_slice(test[:], p.highscores[:])
+	defer delete(test)
 
 	new_score_index: int = -1
+	idx := 0
 	for score, i in p.highscores {
 		if p.score > score {
-			p.highscores[i] = p.score
+			idx = i
 			break
 		}
 	}
 
+	inject_at_elem(&test, idx, p.score)
+	copy_slice(p.highscores[:], test[:10])
 	file_io.save_highscores(filepath, p.highscores)
 }

@@ -151,7 +151,8 @@ draw_centered_list :: proc(
 	}
 
 	for item, i in list {
-		cstr := strings.clone_to_cstring(item, context.temp_allocator)
+		cstr := strings.clone_to_cstring(item)
+		defer delete_cstring(cstr)
 
 		text_len := rl.MeasureText(cstr, text_size) / 2
 

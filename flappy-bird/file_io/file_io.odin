@@ -37,4 +37,8 @@ save_highscores :: proc(filepath: string, highscores: [10]int) {
 	data_as_string := strings.join(tmp[:], "\n")
 	data_as_bytes := transmute([]byte)(data_as_string)
 	os.write_entire_file(filepath, data_as_bytes)
+
+	for s, i in tmp {
+		delete_string(tmp[i])
+	}
 }
