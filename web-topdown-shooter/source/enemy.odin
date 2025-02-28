@@ -2,10 +2,15 @@ package game
 import rl "vendor:raylib"
 
 Enemy :: struct {
-	Pos: rl.Vector2,
+	Pos:  rl.Vector2,
+	dead: bool,
 }
 
 enemy_draw :: proc(e: Enemy) {
+	if e.dead {
+		return
+	}
+
 	rl.DrawTexturePro(
 		textures[.Enemy].texture,
 		textures[.Enemy].source_rect,

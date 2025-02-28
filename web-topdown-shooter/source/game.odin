@@ -29,6 +29,16 @@ update :: proc() {
 	dt := rl.GetFrameTime()
 	player_update(&player, dt)
 
+	// bullet enemy collision
+	for &b in player.Bullets {
+		if !enemy.dead {
+			if rl.CheckCollisionCircles(b.Pos, 16, enemy.Pos, 64) {
+				b.active = false
+				enemy.dead = true
+			}
+		}
+	}
+
 	draw()
 	// Anything allocated using temp allocator is invalid after this.
 	free_all(context.temp_allocator)
@@ -43,6 +53,7 @@ draw :: proc() {
 
 	rl.EndDrawing()
 }
+
 
 // In a web build, this is called when browser changes size. Remove the
 // `rl.SetWindowSize` call if you don't want a resizable game.
