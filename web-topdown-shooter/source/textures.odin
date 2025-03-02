@@ -23,6 +23,18 @@ init_textures :: proc() {
 	textures[.Bullet] = init_texture("assets/bullet.png")
 }
 
+texture_draw :: proc(texture: Texture_Name, pos: rl.Vector2, rotation: f32 = 0) {
+
+	rl.DrawTexturePro(
+		textures[texture].texture,
+		textures[texture].source_rect,
+		{pos.x, pos.y, textures[texture].source_rect.width, textures[texture].source_rect.height},
+		{textures[texture].source_rect.width / 2, textures[texture].source_rect.height / 2},
+		f32(rotation),
+		rl.WHITE,
+	)
+}
+
 @(private = "file")
 init_texture :: proc(file_path: string) -> (texture: Texture) {
 	// A different way of loading a texture: using `read_entire_file` that works

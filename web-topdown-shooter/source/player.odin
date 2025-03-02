@@ -39,19 +39,7 @@ player_draw :: proc(p: Player) {
 	radians := math.atan2(dist.x, dist.y)
 	rotation := -radians * 180 / math.PI
 
-	rl.DrawTexturePro(
-		textures[.Player].texture,
-		textures[.Player].source_rect,
-		{
-			p.Pos.x,
-			p.Pos.y,
-			textures[.Player].source_rect.width,
-			textures[.Player].source_rect.height,
-		},
-		{textures[.Player].source_rect.width / 2, textures[.Player].source_rect.height / 2},
-		f32(rotation),
-		rl.WHITE,
-	)
+	texture_draw(.Player, p.Pos, rotation)
 }
 
 @(private = "file")

@@ -38,17 +38,5 @@ bullet_update :: proc(b: ^Bullet, dt: f32) {
 }
 
 bullet_draw :: proc(b: Bullet) {
-	rl.DrawTexturePro(
-		textures[.Bullet].texture,
-		textures[.Bullet].source_rect,
-		{
-			b.Pos.x,
-			b.Pos.y,
-			textures[.Bullet].source_rect.width,
-			textures[.Bullet].source_rect.height,
-		},
-		{textures[.Bullet].source_rect.width / 2, textures[.Bullet].source_rect.height / 2},
-		0,
-		rl.WHITE,
-	)
+	texture_draw(.Bullet, b.Pos)
 }
