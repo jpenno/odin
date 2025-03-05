@@ -24,7 +24,6 @@ init_textures :: proc() {
 }
 
 texture_draw :: proc(texture: Texture_Name, pos: rl.Vector2, rotation: f32 = 0) {
-
 	rl.DrawTexturePro(
 		textures[texture].texture,
 		textures[texture].source_rect,

@@ -16,10 +16,12 @@ init :: proc() {
 	init_textures()
 
 	player = Player {
-		Pos   = {300, 300},
-		Size  = {textures[.Player].source_rect.width, textures[.Player].source_rect.height},
-		speed = 500,
+		Pos       = {300, 300},
+		Size      = {textures[.Player].source_rect.width, textures[.Player].source_rect.height},
+		speed     = 500,
+		fire_rate = timer_init(0.5),
 	}
+
 	enemy = Enemy {
 		Pos = {500, 500},
 	}

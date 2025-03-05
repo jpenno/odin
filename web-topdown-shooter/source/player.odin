@@ -5,18 +5,21 @@ import "core:math/linalg"
 import rl "vendor:raylib"
 
 Player :: struct {
-	Pos:     rl.Vector2,
-	Dir:     rl.Vector2,
-	Size:    rl.Vector2,
-	speed:   f32,
-	Bullets: [10]Bullet,
+	Pos:       rl.Vector2,
+	Dir:       rl.Vector2,
+	Size:      rl.Vector2,
+	speed:     f32,
+	Bullets:   [10]Bullet,
+	fire_rate: Timer,
 }
 
 player_update :: proc(p: ^Player, dt: f32) {
 	move(p, dt)
 
-	if rl.IsMouseButtonPressed(rl.MouseButton.LEFT) {
-		shoot(p, rl.GetMousePosition())
+	if rl.IsMouseButtonDown(rl.MouseButton.LEFT) {
+		if timer_tick(&p.fire_rate, dt) {
+			shoot(p, rl.GetMousePosition())
+		}
 	}
 
 	for &b in p.Bullets {
